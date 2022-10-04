@@ -11,6 +11,11 @@ public class TestClient {
 
   private static final int EXPECTED_ARG = 4;
   private static final int MAX_BYTE_BUFFER_SIZE = 16;
+  private static final int HOST_NAME_INDEX = 0;
+  private static final int PORT_NUMBER_INDEX = 1;
+  private static final int INPUT_FILE_PATH_INDEX = 2;
+  private static final int OUTPUT_FILE_PATH_INDEX = 3;
+  private static final int ANSWER_PAIR_OFFSET = 2;
 
   public static void main(String[] args) {
     if (args.length != EXPECTED_ARG) {
@@ -18,10 +23,10 @@ public class TestClient {
       System.exit(1);
     }
 
-    String hostname = args[0];
-    int portNumber = Integer.parseInt(args[1]);
-    String inputFilePath = args[2];
-    String outputFilePath = args[3];
+    String hostname = args[HOST_NAME_INDEX];
+    int portNumber = Integer.parseInt(args[PORT_NUMBER_INDEX]);
+    String inputFilePath = args[INPUT_FILE_PATH_INDEX];
+    String outputFilePath = args[OUTPUT_FILE_PATH_INDEX];
     List<String> lines = FileProcessor.readFile(inputFilePath);
     if (lines == null) {
       System.err.println("Failed to read the input file");
@@ -48,6 +53,9 @@ public class TestClient {
         index += MAX_BYTE_BUFFER_SIZE;
         out.write(buffer, 0, MAX_BYTE_BUFFER_SIZE);
       }
+      // Send the self-defined EOF character * to the server. We use this character because the
+      // input file only has subtraction and addition operation, so this character cannot appear in
+      // a valida input file.
       buffer[0] = (byte) ('*');
       out.write(buffer, 0, 1);
       while (in.read(buffer, 0, MAX_BYTE_BUFFER_SIZE) != -1) {
@@ -71,7 +79,9 @@ public class TestClient {
     short[] lengthArr = new short[numOfExpression];
     String[] expressionArr = new String[numOfExpression];
     int index = 0;
-    for (int i = 1; i < lines.size(); i += 2) {
+
+    // Start after the number of expression and process every two strings as a pair
+    for (int i = 1; i < lines.size(); i += ANSWER_PAIR_OFFSET) {
       short lengthOfExpression = Short.parseShort(lines.get(i));
       String expression = lines.get(i + 1);
       lengthArr[index] = lengthOfExpression;

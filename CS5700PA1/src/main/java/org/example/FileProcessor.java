@@ -9,6 +9,12 @@ import java.util.List;
 
 public class FileProcessor {
 
+  /**
+   * Read the file content as a list of strings
+   *
+   * @param filePath absolute path of the file as a string
+   * @return a list of strings where each string indicate a line in the file
+   */
   public static List<String> readFile(String filePath) {
     List<String> lines = null;
     try {
@@ -19,6 +25,13 @@ public class FileProcessor {
     return lines;
   }
 
+  /**
+   * Write the protocol response to the file path. If the file does not exist, it will create this
+   * file, otherwise, it will overwrite.
+   *
+   * @param filePath absolute path for the new response file
+   * @param response the protocol response object containing all the evaluated results
+   */
   public static void writeFile(String filePath, ProtocolResponse response) {
     String responseString = response.toString();
     try (FileWriter fWriter = new FileWriter(filePath)) {

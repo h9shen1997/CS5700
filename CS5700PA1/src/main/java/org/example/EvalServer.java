@@ -10,6 +10,7 @@ public class EvalServer {
 
   public static void main(String[] args) {
 
+    // The server starts with one argument, the receiving port number
     if (args.length != EXPECTED_ARG) {
       System.err.println("Usage: provide port number");
       System.exit(1);
@@ -17,6 +18,7 @@ public class EvalServer {
 
     int portNumber = Integer.parseInt(args[0]);
 
+    // Server keeps running and start a thread whenever a new client connection is received.
     try (ServerSocket serverSocket = new ServerSocket(portNumber)) {
       System.out.println("Server start waiting...");
       serverSocket.setReuseAddress(true);
